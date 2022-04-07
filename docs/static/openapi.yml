@@ -27679,10 +27679,82 @@ paths:
           format: uint64
       tags:
         - Query
+  /mconcat/microchain/consensus/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: MconcatMicrochainConsensusParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /mconcat/microchain/microchain/params:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: MconcatMicrochainMicrochainParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /mconcat/microchain/permission/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: MconcatMicrochainPermissionParams
       responses:
         '200':
           description: A successful response.
@@ -47027,10 +47099,30 @@ definitions:
     description: >-
       QueryAppVersionResponse is the response type for the Query/AppVersion RPC
       method.
+  mconcat.microchain.consensus.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  mconcat.microchain.consensus.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   mconcat.microchain.microchain.Params:
     type: object
     description: Params defines the parameters for the module.
   mconcat.microchain.microchain.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  mconcat.microchain.permission.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  mconcat.microchain.permission.QueryParamsResponse:
     type: object
     properties:
       params:

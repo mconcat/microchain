@@ -1,0 +1,14 @@
+syntax = "proto3";
+package mconcat.microchain.permission;
+
+import "gogoproto/gogo.proto";
+import "permission/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/mconcat/microchain/x/permission/types";
+
+// GenesisState defines the permission module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

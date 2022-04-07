@@ -92,10 +92,19 @@ import (
 
 	"github.com/mconcat/microchain/docs"
 
+	consensusmodule "github.com/mconcat/microchain/x/consensus"
+	consensusmodulekeeper "github.com/mconcat/microchain/x/consensus/keeper"
+	consensusmoduletypes "github.com/mconcat/microchain/x/consensus/types"
 	microchainmodule "github.com/mconcat/microchain/x/microchain"
 	microchainmodulekeeper "github.com/mconcat/microchain/x/microchain/keeper"
 	microchainmoduletypes "github.com/mconcat/microchain/x/microchain/types"
-	// this line is used by starport scaffolding # stargate/app/moduleImport
+	permissionmodule "github.com/mconcat/microchain/x/permission"
+	permissionmodulekeeper "github.com/mconcat/microchain/x/permission/keeper"
+	permissionmoduletypes "github.com/mconcat/microchain/x/permission/types"
+	ertpmodule "github.com/mconcat/microchain/x/ertp"
+		ertpmodulekeeper "github.com/mconcat/microchain/x/ertp/keeper"
+		ertpmoduletypes "github.com/mconcat/microchain/x/ertp/types"
+// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
 const (
@@ -148,7 +157,10 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		microchainmodule.AppModuleBasic{},
-		// this line is used by starport scaffolding # stargate/app/moduleBasic
+		permissionmodule.AppModuleBasic{},
+		consensusmodule.AppModuleBasic{},
+		ertpmodule.AppModuleBasic{},
+// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
@@ -218,7 +230,13 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
 	MicrochainKeeper microchainmodulekeeper.Keeper
-	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
+
+	PermissionKeeper permissionmodulekeeper.Keeper
+
+	ConsensusKeeper consensusmodulekeeper.Keeper
+	
+		ErtpKeeper ertpmodulekeeper.Keeper
+// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
 	mm *module.Manager
@@ -255,7 +273,10 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		microchainmoduletypes.StoreKey,
-		// this line is used by starport scaffolding # stargate/app/storeKey
+		permissionmoduletypes.StoreKey,
+		consensusmoduletypes.StoreKey,
+		ertpmoduletypes.StoreKey,
+// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -361,7 +382,33 @@ func New(
 	)
 	microchainModule := microchainmodule.NewAppModule(appCodec, app.MicrochainKeeper, app.AccountKeeper, app.BankKeeper)
 
-	// this line is used by starport scaffolding # stargate/app/keeperDefinition
+	app.PermissionKeeper = *permissionmodulekeeper.NewKeeper(
+		appCodec,
+		keys[permissionmoduletypes.StoreKey],
+		keys[permissionmoduletypes.MemStoreKey],
+		app.GetSubspace(permissionmoduletypes.ModuleName),
+	)
+	permissionModule := permissionmodule.NewAppModule(appCodec, app.PermissionKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.ConsensusKeeper = *consensusmodulekeeper.NewKeeper(
+		appCodec,
+		keys[consensusmoduletypes.StoreKey],
+		keys[consensusmoduletypes.MemStoreKey],
+		app.GetSubspace(consensusmoduletypes.ModuleName),
+	)
+	consensusModule := consensusmodule.NewAppModule(appCodec, app.ConsensusKeeper, app.AccountKeeper, app.BankKeeper)
+
+	
+		app.ErtpKeeper = *ertpmodulekeeper.NewKeeper(
+			appCodec,
+			keys[ertpmoduletypes.StoreKey],
+			keys[ertpmoduletypes.MemStoreKey],
+			app.GetSubspace(ertpmoduletypes.ModuleName),
+			
+			)
+		ertpModule := ertpmodule.NewAppModule(appCodec, app.ErtpKeeper, app.AccountKeeper, app.BankKeeper)
+
+		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
@@ -400,7 +447,10 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		microchainModule,
-		// this line is used by starport scaffolding # stargate/app/appModule
+		permissionModule,
+		consensusModule,
+		ertpModule,
+// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -435,7 +485,10 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		microchainmoduletypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
+		permissionmoduletypes.ModuleName,
+		consensusmoduletypes.ModuleName,
+		ertpmoduletypes.ModuleName,
+// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -458,7 +511,10 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		microchainModule,
-		// this line is used by starport scaffolding # stargate/app/appModule
+		permissionModule,
+		consensusModule,
+		ertpModule,
+// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
 
@@ -646,7 +702,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(microchainmoduletypes.ModuleName)
-	// this line is used by starport scaffolding # stargate/app/paramSubspace
+	paramsKeeper.Subspace(permissionmoduletypes.ModuleName)
+	paramsKeeper.Subspace(consensusmoduletypes.ModuleName)
+	paramsKeeper.Subspace(ertpmoduletypes.ModuleName)
+// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
 }

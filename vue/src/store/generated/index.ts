@@ -20,7 +20,9 @@ import CosmosIbcGoIbcCoreChannelV1 from './cosmos/ibc-go/ibc.core.channel.v1'
 import CosmosIbcGoIbcCoreClientV1 from './cosmos/ibc-go/ibc.core.client.v1'
 import CosmosIbcGoIbcCoreConnectionV1 from './cosmos/ibc-go/ibc.core.connection.v1'
 import CosmosIbcGoIbcCorePortV1 from './cosmos/ibc-go/ibc.core.port.v1'
+import MconcatMicrochainMconcatMicrochainConsensus from './mconcat/microchain/mconcat.microchain.consensus'
 import MconcatMicrochainMconcatMicrochainMicrochain from './mconcat/microchain/mconcat.microchain.microchain'
+import MconcatMicrochainMconcatMicrochainPermission from './mconcat/microchain/mconcat.microchain.permission'
 
 
 export default { 
@@ -44,7 +46,9 @@ export default {
   CosmosIbcGoIbcCoreClientV1: load(CosmosIbcGoIbcCoreClientV1, 'ibc.core.client.v1'),
   CosmosIbcGoIbcCoreConnectionV1: load(CosmosIbcGoIbcCoreConnectionV1, 'ibc.core.connection.v1'),
   CosmosIbcGoIbcCorePortV1: load(CosmosIbcGoIbcCorePortV1, 'ibc.core.port.v1'),
+  MconcatMicrochainMconcatMicrochainConsensus: load(MconcatMicrochainMconcatMicrochainConsensus, 'mconcat.microchain.consensus'),
   MconcatMicrochainMconcatMicrochainMicrochain: load(MconcatMicrochainMconcatMicrochainMicrochain, 'mconcat.microchain.microchain'),
+  MconcatMicrochainMconcatMicrochainPermission: load(MconcatMicrochainMconcatMicrochainPermission, 'mconcat.microchain.permission'),
   
 }
 
